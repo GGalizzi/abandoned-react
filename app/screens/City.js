@@ -1,8 +1,13 @@
 import React from 'react';
+import { Text } from 'react-native';
 
 class City extends React.Component {
   render() {
-    return null;
+    return (
+      <Text>
+        asd
+      </Text>
+    );
   }
 }
 
