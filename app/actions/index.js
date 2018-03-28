@@ -3,9 +3,11 @@ import type {
    HealStaminaAction,
    ChangeLocationAction,
    ChangeDestinationAction,
+   StartTravellingAction,
    TimeAction
    } from '../flowtypes/Action';
 import type { CurrentLocation } from '../flowtypes/Location';
+import { getPlaceInfo } from '../helpers';
 
 export const HEAL_STAMINA = 'HEAL_STAMINA';
 export function healStamina(amount: number): HealStaminaAction {
@@ -32,9 +34,24 @@ export function passTime(time: number): TimeAction {
 }
 
 export const CHANGE_DESTINATION = 'CHANGE_DESTINATION';
-export function startTravelling(destination: CurrentLocation): ChangeDestinationAction {
+export function changeDestination(destination: CurrentLocation): ChangeDestinationAction {
   return {
     type: CHANGE_DESTINATION,
     destination,
   }
+}
+
+export const START_TRAVELLING = 'START_TRAVELLING';
+export function startTravelling(
+  currentPosition: Position,
+  destination: CurrentLocation): StartTravellingAction {
+    console.log("PASSED POSITION:", currentPosition);
+    return {
+      type: START_TRAVELLING,
+      destination,
+      currentLocation: {
+        type: 'TRAVEL',
+        position: currentPosition,
+      }
+    };
 }

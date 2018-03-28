@@ -28,6 +28,7 @@ class City extends React.Component<Props> {
   }
 
   render() {
+    if (!this.props.currentLocation) return null;
     return (
       <View>
         <Text>You are in {this.props.currentLocation.name}</Text>

@@ -7,7 +7,7 @@ export type CurrentLocation =
 
 export type Travel = {
   type: 'TRAVEL',
-  location: Position,
+  position: Position,
 }
 
 export type Place = {

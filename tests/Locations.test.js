@@ -17,12 +17,14 @@ describe('currentLocation', () => {
 
     it('can start traveling somewhere', () => {
       const newCity = {type: 'CITY', index: 1};
-      expect(reducer(initialState, startTravelling(newCity))).toEqual({
+      const initCity = initialState.knownCities[0];
+      expect(reducer(initialState, startTravelling(initCity.position, newCity))).toEqual({
         ...initialState,
         destination: newCity,
+
         currentLocation: {
           type: 'TRAVEL',
-          position: initialState.knownLocations[0].position,
+          position: initCity.position,
         }
       })
     })

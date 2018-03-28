@@ -24,13 +24,19 @@ export default (state: LocationData = initialState, action: LocationAction) => {
   switch (action.type) {
     case Action.CHANGE_LOCATION:
       return {
-        ...initialState,
+        ...state,
         currentLocation: action.location,
       };
     case Action.CHANGE_DESTINATION:
       return {
-        ...initialState,
+        ...state,
         destination: action.destination,
+      };
+    case Action.START_TRAVELLING:
+      return {
+        ...state,
+        destination: action.destination,
+        currentLocation: action.currentLocation,
       };
     default:
       return state;

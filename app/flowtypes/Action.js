@@ -1,5 +1,5 @@
 //@flow
-import type { CurrentLocation } from './Location';
+import type { CurrentLocation, Travel } from './Location';
 
 export type HealStaminaAction = {
   type: 'HEAL_STAMINA',
@@ -16,6 +16,12 @@ export type ChangeDestinationAction = {
   destination: CurrentLocation,
 }
 
+export type StartTravellingAction = {
+  type: 'START_TRAVELLING',
+  destination: CurrentLocation,
+  currentLocation: Travel,
+}
+
 export type PassTimeAction = {
   type: 'PASS_TIME',
   time: number,
@@ -27,6 +33,7 @@ export type MobAction =
 export type LocationAction =
   | ChangeLocationAction
   | ChangeDestinationAction
+  | StartTravellingAction
 
 
 export type TimeAction =

@@ -21,9 +21,12 @@ export class World extends React.Component<Props> {
 
   travelTo (location: CurrentLocation) {
     return () => {
-      this.props.dispatch(NavigationActions.navigate({
-        routeName: 'Travel',
-        params: { destination: location },
+      this.props.dispatch(NavigationActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({
+          routeName: 'Travel',
+          params: { destination: location },
+        })]
       }));
     }
   }
