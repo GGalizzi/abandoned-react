@@ -1,12 +1,7 @@
 //@flow
 import type { Position } from '../flowtypes/Position';
+import type { City } from '../flowtypes/Location';
 import type { Amenity, Inn, Weaponsmith } from '../flowtypes/Amenity';
-
-export type City = {|
-  name: string,
-  position: Position,
-  amenities: Array<Amenity>,
-|};
 
 export function CityGenerator(name: string): City {
   return {

@@ -1,14 +1,47 @@
+//@flow
+import type { City as CityType } from '../flowtypes/Location';
+import type { Dispatch } from 'redux';
 import React from 'react';
-import { Text } from 'react-native';
+import { NavigationActions } from 'react-navigation';
+import { connect } from 'react-redux';
+import { Text, View, TouchableHighlight } from 'react-native';
+import { passTime } from '../actions';
+import { getPlaceInfo } from '../helpers';
 
-class City extends React.Component {
+type Props = {
+  currentLocation: CityType,
+  dispatch: Dispatch<any>,
+}
+
+class City extends React.Component<Props> {
+
+  constructor(props: Props) {
+    super(props);
+
+    (this:any).toWorld = this.toWorld.bind(this);
+  }
+
+  toWorld() {
+    this.props.dispatch(NavigationActions.navigate({
+      routeName: 'World',
+    }));
+  }
+
   render() {
     return (
-      <Text>
-        asd
-      </Text>
+      <View>
+        <Text>You are in {this.props.currentLocation.name}</Text>
+
+        <TouchableHighlight onPress={this.toWorld}>
+          <Text>To World</Text>
+        </TouchableHighlight>
+      </View>
     );
   }
 }
 
-export default City;
+const mapStateToProps = (state) => ({
+  currentLocation: getPlaceInfo(state.locations.currentLocation, state),
+});
+
+export default connect(mapStateToProps)(City);
