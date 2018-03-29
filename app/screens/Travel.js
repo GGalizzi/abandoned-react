@@ -1,35 +1,36 @@
 //@flow
-import type { Place, CurrentLocation, City } from '../flowtypes/Location';
+import type { PlaceIndex, CurrentLocation, City, LocationData } from '../flowtypes/Location';
 import type { Position } from '../flowtypes/Position';
 import type { NavigationRoute } from 'react-navigation';
 import type { Dispatch } from 'redux';
 import React from 'react';
 import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
-import { getPlaceInfo } from '../helpers';
+import { getPlaceInfo, getCurrentPosition } from '../helpers';
 import * as Action from '../actions';
 
 type Props = {
+  locationData: LocationData,
   destination: City,
-  currentPosition: Position,
-  currentLocation: City,
   navigation: any,
   dispatch: Dispatch<any>,
 };
 
 class Travel extends React.Component<Props> {
+  currentPosition: Position = null;
   constructor(props: Props) {
     super(props);
+
+    this.currentPosition = getCurrentPosition(props.locationData);
   }
 
   componentWillMount() {
-    var destinationParam: ?CurrentLocation = this.props.navigation.state.params.destination;
+    var destinationParam: ?PlaceIndex = this.props.navigation.state.params.destination;
     if (destinationParam) {
       this.props.dispatch(
-        Action.startTravelling(this.props.currentLocation.position, destinationParam)
+        Action.startTravelling(this.props.locationData, destinationParam)
       );
     }
-
   }
 
   render() {
@@ -43,7 +44,7 @@ class Travel extends React.Component<Props> {
 
         { this.props.currentPosition ?
           <Text>
-            {"location" + this.props.currentPosition.x + "," + this.props.currentPosition.y }
+            {"location" + this.currentPosition.x + "," + this.currentPosition.y }
           </Text>
         : null }
       </View>
@@ -51,16 +52,9 @@ class Travel extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = (state) => {
-  const destination = getPlaceInfo(state.locations.destination, state);
-  const currentPosition = state.locations.currentLocation.position;
-  const currentLocation = getPlaceInfo(state.locations.currentLocation, state);
-
-  return {
-    destination,
-    currentPosition,
-    currentLocation,
-  };
-};
+const mapStateToProps = (state) => ({
+  destination: getPlaceInfo(state.locations.destination, state.locations),
+  locationData: state.locations,
+});
 
 export default connect(mapStateToProps)(Travel);

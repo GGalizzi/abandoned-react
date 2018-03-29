@@ -1,17 +1,13 @@
 //@flow
 import type { City } from '../flowtypes/Location';
 import type { LocationAction } from '../flowtypes/Action';
-import type { CurrentLocation } from '../flowtypes/Location';
+import type { CurrentLocation, LocationData } from '../flowtypes/Location';
 import { CityGenerator } from '../models/City';
 import * as Action from '../actions';
 
-type LocationData = {
-  currentLocation: CurrentLocation,
-  destination: ?CurrentLocation,
-  knownCities: Array<City>,
-};
 
 export const initialState: LocationData = {
+  pathGenerator: null,
   currentLocation: {type: 'CITY', index: 0},
   destination: null,
   knownCities: [
@@ -37,6 +33,7 @@ export default (state: LocationData = initialState, action: LocationAction) => {
         ...state,
         destination: action.destination,
         currentLocation: action.currentLocation,
+        pathGenerator: action.pathGenerator,
       };
     default:
       return state;

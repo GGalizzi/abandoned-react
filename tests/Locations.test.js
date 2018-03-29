@@ -1,7 +1,7 @@
 import React from 'react';
 import reducer, { initialState } from '../app/reducers/locations';
 import { initialState as initialTime } from '../app/reducers/time';
-import { changeLocation, startTravelling } from '../app/actions';
+import { changeLocation, startTravelling, createAStarGenerator } from '../app/actions';
 import { World } from '../app/screens/World';
 import TestRenderer from 'react-test-renderer';
 
@@ -15,17 +15,36 @@ describe('currentLocation', () => {
       })
     })
 
-    it('can start traveling somewhere', () => {
+    describe('travelling', () => {
+      initialState.knownCities[0].position = { x: 10, y: 10 };
+      initialState.knownCities[1].position = { x: 12, y: 12 };
       const newCity = {type: 'CITY', index: 1};
       const initCity = initialState.knownCities[0];
-      expect(reducer(initialState, startTravelling(initCity.position, newCity))).toEqual({
-        ...initialState,
-        destination: newCity,
+      let newState = null;
+      it('can start traveling somewhere', () => {
+        const action = startTravelling(initialState, newCity)
+        newState = reducer(initialState, action);
+        expect(newState).toMatchObject({
+          ...initialState,
+          destination: newCity,
+          pathGenerator: expect.anything(),
+          currentLocation: {
+            type: 'TRAVEL',
+            position: { x: 10, y: 10 },
+          }
+        })
+      })
 
-        currentLocation: {
-          type: 'TRAVEL',
-          position: initCity.position,
-        }
+      it('can continue travelling somewhere', () => {
+        const action = startTravelling(newState, newCity);
+        expect(reducer(newState, action)).toMatchObject({
+          ...newState,
+          pathGenerator: expect.anything(),
+          currentLocation: {
+            type: 'TRAVEL',
+            position: { x: 11, y: 11 }
+          }
+        });
       })
     })
   })

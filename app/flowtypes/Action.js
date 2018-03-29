@@ -1,5 +1,6 @@
 //@flow
 import type { CurrentLocation, Travel } from './Location';
+import type { Position } from './Position';
 
 export type HealStaminaAction = {
   type: 'HEAL_STAMINA',
@@ -20,6 +21,7 @@ export type StartTravellingAction = {
   type: 'START_TRAVELLING',
   destination: CurrentLocation,
   currentLocation: Travel,
+  pathGenerator: ?Generator<Position, void, void>,
 }
 
 export type PassTimeAction = {

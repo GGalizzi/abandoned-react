@@ -42,7 +42,7 @@ class City extends React.Component<Props> {
 }
 
 const mapStateToProps = (state) => ({
-  currentLocation: getPlaceInfo(state.locations.currentLocation, state),
+  currentLocation: getPlaceInfo(state.locations.currentLocation, state.locations),
 });
 
 export default connect(mapStateToProps)(City);

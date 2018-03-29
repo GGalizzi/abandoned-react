@@ -2,7 +2,7 @@
 import type { Position } from './Position';
 import type { Amenity } from './Amenity';
 export type CurrentLocation =
-  | Place
+  | PlaceIndex
   | Travel
 
 export type Travel = {
@@ -10,13 +10,23 @@ export type Travel = {
   position: Position,
 }
 
-export type Place = {
+export type PlaceIndex = {
   type: 'CITY' | 'DUNGEON',
   index: number,
 };
+
+export type Place =
+  | City
 
 export type City = {|
   name: string,
   position: Position,
   amenities: Array<Amenity>,
 |};
+
+export type LocationData = {
+  pathGenerator: ?Generator<Position, void, void>,
+  currentLocation: CurrentLocation,
+  destination: ?CurrentLocation,
+  knownCities: Array<City>,
+};
