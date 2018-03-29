@@ -1,11 +1,11 @@
 //@flow
 import type { Dispatch } from 'redux';
-import type { City, CurrentLocation } from '../flowtypes/Location';
+import type { City, PlaceIndex } from '../flowtypes/Location';
 import React from 'react';
 import { NavigationActions } from 'react-navigation';
 import { View, TouchableHighlight, Text } from 'react-native';
 import { connect } from 'react-redux';
-import { passTime } from '../actions';
+import * as Action from '../actions';
 
 type Props = {
   knownCities: City[],
@@ -19,15 +19,9 @@ export class World extends React.Component<Props> {
     (this:any).travelTo = this.travelTo.bind(this);
   }
 
-  travelTo (location: CurrentLocation) {
+  travelTo (location: PlaceIndex) {
     return () => {
-      this.props.dispatch(NavigationActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({
-          routeName: 'Travel',
-          params: { destination: location },
-        })]
-      }));
+      this.props.dispatch(Action.startTravelling(location));
     }
   }
 

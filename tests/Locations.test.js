@@ -1,9 +1,15 @@
 import React from 'react';
+import thunk from 'redux-thunk';
+import configureStore from 'redux-mock-store';
+import { NavigationActions } from 'react-navigation';
 import reducer, { initialState } from '../app/reducers/locations';
 import { initialState as initialTime } from '../app/reducers/time';
-import { changeLocation, startTravelling, createAStarGenerator } from '../app/actions';
+import { changeLocation, startTravelling, stepTravel, createAStarGenerator } from '../app/actions';
 import { World } from '../app/screens/World';
 import TestRenderer from 'react-test-renderer';
+
+const middleware = [thunk];
+const mockStore = configureStore(middleware);
 
 describe('currentLocation', () => {
   describe('changing location', () => {
@@ -21,9 +27,29 @@ describe('currentLocation', () => {
       const newCity = {type: 'CITY', index: 1};
       const initCity = initialState.knownCities[0];
       let newState = null;
+      let store = mockStore({locations: initialState});
       it('can start traveling somewhere', () => {
-        const action = startTravelling(initialState, newCity)
-        newState = reducer(initialState, action);
+        store.dispatch(startTravelling(newCity));
+
+        expect(store.getActions()[0]).toMatchObject({
+          type: 'START_TRAVELLING',
+          pathGenerator: expect.anything(),
+          destination: newCity,
+          currentLocation: {
+            type: 'TRAVEL',
+            position: {x:10, y:10},
+          }
+        });
+
+        expect(store.getActions()[1]).toMatchObject({
+          index: 0,
+          actions: [NavigationActions.navigate({
+            routeName: 'Travel',
+          })]
+        });
+
+        newState = reducer(initialState, store.getActions()[0]);
+
         expect(newState).toMatchObject({
           ...initialState,
           destination: newCity,
@@ -36,8 +62,18 @@ describe('currentLocation', () => {
       })
 
       it('can continue travelling somewhere', () => {
-        const action = startTravelling(newState, newCity);
-        newState = reducer(newState, action);
+        store = mockStore({locations:newState});
+        store.dispatch(stepTravel());
+
+        expect(store.getActions()[0]).toMatchObject({
+          type: 'STEP_TRAVEL',
+          currentLocation: {
+            type: 'TRAVEL',
+            position: { x: 11, y: 11 },
+          }
+        });
+
+        newState = reducer(newState, store.getActions()[0]);
         expect(newState).toMatchObject({
           ...newState,
           pathGenerator: expect.anything(),
@@ -49,12 +85,23 @@ describe('currentLocation', () => {
       })
 
       it('stops travelling, entering new location', () => {
-        const action = startTravelling(newState, newCity);
+        store.clearActions();
+        store.dispatch(stepTravel());
 
-        expect(reducer(newState, action)).toMatchObject({
+        expect(store.getActions()[0]).toMatchObject({
+          type:'STEP_TRAVEL',
+          currentLocation: newCity,
+        });
+
+        expect(store.getActions()[1]).toMatchObject({
+          index: 0,
+          actions: [NavigationActions.navigate({
+            routeName: 'City',
+          })]
+        });
+
+        expect(reducer(newState, store.getActions()[0])).toMatchObject({
           ...newState,
-          destination: null,
-          pathGenerator: null,
           currentLocation: newCity,
         })
       })

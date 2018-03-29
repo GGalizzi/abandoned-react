@@ -35,6 +35,11 @@ export default (state: LocationData = initialState, action: LocationAction) => {
         currentLocation: action.currentLocation,
         pathGenerator: action.pathGenerator,
       };
+    case Action.STEP_TRAVEL:
+      return {
+        ...state,
+        currentLocation: action.currentLocation,
+      };
     default:
       return state;
   }

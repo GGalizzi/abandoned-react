@@ -13,7 +13,7 @@ import * as Action from '../actions';
 type Props = {
   locationData: LocationData,
   destination: City,
-  navigation: any,
+  pathGenerator: Generator<Position,void,void>,
   dispatch: Dispatch<any>,
 };
 
@@ -23,35 +23,22 @@ class Travel extends React.Component<Props> {
     super(props);
   }
 
-  updateTravelState(props: Props) {
-    this.currentPosition = getCurrentPosition(props.locationData);
-    var destinationParam: ?PlaceIndex = props.navigation.state.params.destination;
-    if (destinationParam) {
-      props.dispatch(
-        Action.startTravelling(props.locationData, destinationParam)
-      );
-    }
+  updateTravelState() {
+    this.props.dispatch(Action.stepTravel());
+  }
 
+  componentWillUpdate(nextProps) {
+    this.currentPosition = getCurrentPosition(nextProps.locationData);
   }
 
   componentWillMount() {
-    this.updateTravelState(this.props);
+    this.updateTravelState();
   }
 
   componentDidUpdate() {
-    this.currentPosition = getCurrentPosition(this.props.locationData);
-    if (this.props.locationData.currentLocation.type !== 'TRAVEL') {
-      this.props.dispatch(NavigationActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({
-          routeName: 'City',
-        })]
-      }));
-      return;
-    }
     setTimeout(() => {
-      this.updateTravelState(this.props);
-    }, 1500);
+      this.updateTravelState();
+    }, 100);
   }
 
   render() {
@@ -75,6 +62,7 @@ class Travel extends React.Component<Props> {
 
 const mapStateToProps = (state) => ({
   destination: getPlaceInfo(state.locations.destination, state.locations),
+  pathGenerator: state.locations.pathGenerator,
   locationData: state.locations,
 });
 

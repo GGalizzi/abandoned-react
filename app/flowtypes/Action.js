@@ -24,6 +24,11 @@ export type StartTravellingAction = {
   pathGenerator: ?Generator<Position, void, void>,
 }
 
+export type StepTravelAction = {
+  type: 'STEP_TRAVEL',
+  currentLocation: CurrentLocation,
+}
+
 export type PassTimeAction = {
   type: 'PASS_TIME',
   time: number,
@@ -36,6 +41,7 @@ export type LocationAction =
   | ChangeLocationAction
   | ChangeDestinationAction
   | StartTravellingAction
+  | StepTravelAction
 
 
 export type TimeAction =

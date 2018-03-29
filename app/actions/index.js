@@ -4,11 +4,13 @@ import type {
    ChangeLocationAction,
    ChangeDestinationAction,
    StartTravellingAction,
+   StepTravelAction,
    TimeAction
    } from '../flowtypes/Action';
-import type { Place, PlaceIndex, CurrentLocation, LocationData } from '../flowtypes/Location';
+import type { Travel, Place, PlaceIndex, CurrentLocation, LocationData } from '../flowtypes/Location';
 import type { Position } from '../flowtypes/Position';
 import { getPlaceInfo, getCurrentPosition } from '../helpers';
+import { NavigationActions } from 'react-navigation';
 import ROT from '../vendor/rot';
 
 export const HEAL_STAMINA = 'HEAL_STAMINA';
@@ -55,39 +57,80 @@ export function* createAStarGenerator(destination: Place, startingPoint: Positio
 }
 
 export const START_TRAVELLING = 'START_TRAVELLING';
-export function startTravelling(
-  state: LocationData,
-  destination: PlaceIndex): StartTravellingAction {
-    let action: StartTravellingAction = {
+export function startTravelling(destination: PlaceIndex) {
+  return function(dispatch: any, getState: any) {
+    // Creates the pathGenerator
+    // sets the state destination
+    // dispatches navigation change
+
+    const state = getState();
+    if (state.locations.currentLocation.type === 'TRAVEL') {
+      throw new Error("Can't start new travel during travel, it has to be stopped first");
+    }
+
+    let pathGenerator = createAStarGenerator(
+      getPlaceInfo(destination, state.locations),
+      getCurrentPosition(state.locations),
+    );
+
+    pathGenerator.next();
+
+    let startTravel: StartTravellingAction = {
       type: START_TRAVELLING,
-      pathGenerator: state.pathGenerator,
+      pathGenerator,
       destination,
       currentLocation: {
         type: 'TRAVEL',
-        position: getCurrentPosition(state),
+        position: getCurrentPosition(state.locations),
       }
     };
 
-    const place = getPlaceInfo(destination, state);
-    let pathGenerator = state.pathGenerator;
+    dispatch(startTravel);
+    dispatch(NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({
+        routeName: 'Travel'
+      })],
+    }));
+  }
+}
 
-    // Check if destination has changed.
-    if (!state.destination ||
-        state.destination.type !== destination.type ||
-        state.destination.index !== (destination:any).index) {
-          pathGenerator = action.pathGenerator = createAStarGenerator(place, getCurrentPosition(state));
+export const STEP_TRAVEL = 'STEP_TRAVEL';
+export function stepTravel() {
+  return function(dispatch: any, getState: any) {
+    // Get the next position from pathGenerator, pass time if moved
+    // If pathGenerator is done then navigate to City or corresponding screen.
+    // and finish travel state
+
+    const state = getState();
+
+    if (state.locations.currentLocation.type !== 'TRAVEL') {
+      throw new Error("Trying to step travel when we are not in travel. ");
     }
 
-    if (!state.pathGenerator) {
-      pathGenerator = action.pathGenerator = createAStarGenerator(place, getCurrentPosition(state));
-    }
-    const n = (pathGenerator:any).next();
+    const n = (state.locations.pathGenerator:any).next();
+    let newLocation: CurrentLocation = state.locations.currentLocation;
     if (n.done) {
-      action.currentLocation = (destination:any);
-      action.pathGenerator = null;
-      action.destination = null;
+      newLocation = state.locations.destination;
     } else {
-      action.currentLocation.position = n.value;
+      (newLocation:any).position = n.value;
+      if (n.value !== state.locations.currentLocation.position) {
+        //TODO: dispatch time forward
+      }
     }
-    return action;
+    const newStep: StepTravelAction = {
+      type: 'STEP_TRAVEL',
+      currentLocation: newLocation,
+    }
+    dispatch(newStep);
+
+    if (n.done) {
+      dispatch(NavigationActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({
+          routeName: 'City'
+        })],
+      }));
+    }
+  }
 }
