@@ -58,11 +58,6 @@ export const START_TRAVELLING = 'START_TRAVELLING';
 export function startTravelling(
   state: LocationData,
   destination: PlaceIndex): StartTravellingAction {
-    // If destination is different than our current one
-      // Replace it and make a new generator.
-    // If we have a generator
-      // Get the new position from it's next fn
-      // Otherwise make on with the destination point.
     let action: StartTravellingAction = {
       type: START_TRAVELLING,
       pathGenerator: state.pathGenerator,
@@ -75,6 +70,8 @@ export function startTravelling(
 
     const place = getPlaceInfo(destination, state);
     let pathGenerator = state.pathGenerator;
+
+    // Check if destination has changed.
     if (!state.destination ||
         state.destination.type !== destination.type ||
         state.destination.index !== (destination:any).index) {
@@ -84,7 +81,13 @@ export function startTravelling(
     if (!state.pathGenerator) {
       pathGenerator = action.pathGenerator = createAStarGenerator(place, getCurrentPosition(state));
     }
-
-    action.currentLocation.position = (pathGenerator:any).next().value;
+    const n = (pathGenerator:any).next();
+    if (n.done) {
+      action.currentLocation = (destination:any);
+      action.pathGenerator = null;
+      action.destination = null;
+    } else {
+      action.currentLocation.position = n.value;
+    }
     return action;
 }

@@ -17,7 +17,7 @@ describe('currentLocation', () => {
 
     describe('travelling', () => {
       initialState.knownCities[0].position = { x: 10, y: 10 };
-      initialState.knownCities[1].position = { x: 12, y: 12 };
+      initialState.knownCities[1].position = { x: 11, y: 11 };
       const newCity = {type: 'CITY', index: 1};
       const initCity = initialState.knownCities[0];
       let newState = null;
@@ -37,7 +37,8 @@ describe('currentLocation', () => {
 
       it('can continue travelling somewhere', () => {
         const action = startTravelling(newState, newCity);
-        expect(reducer(newState, action)).toMatchObject({
+        newState = reducer(newState, action);
+        expect(newState).toMatchObject({
           ...newState,
           pathGenerator: expect.anything(),
           currentLocation: {
@@ -45,6 +46,17 @@ describe('currentLocation', () => {
             position: { x: 11, y: 11 }
           }
         });
+      })
+
+      it('stops travelling, entering new location', () => {
+        const action = startTravelling(newState, newCity);
+
+        expect(reducer(newState, action)).toMatchObject({
+          ...newState,
+          destination: null,
+          pathGenerator: null,
+          currentLocation: newCity,
+        })
       })
     })
   })

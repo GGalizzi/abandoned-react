@@ -19,7 +19,7 @@ export type ChangeDestinationAction = {
 
 export type StartTravellingAction = {
   type: 'START_TRAVELLING',
-  destination: CurrentLocation,
+  destination: ?CurrentLocation,
   currentLocation: Travel,
   pathGenerator: ?Generator<Position, void, void>,
 }

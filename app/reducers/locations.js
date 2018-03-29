@@ -11,8 +11,8 @@ export const initialState: LocationData = {
   currentLocation: {type: 'CITY', index: 0},
   destination: null,
   knownCities: [
-    CityGenerator("Cronoga"),
-    CityGenerator("Malof"),
+    CityGenerator("Cronoga", {x: 10, y: 10}),
+    CityGenerator("Malof", {x: 15, y: 18}),
   ],
 };
 

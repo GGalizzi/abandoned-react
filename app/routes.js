@@ -15,7 +15,6 @@ export default StackNavigator({
     screen: Travel,
   }
 }, {
-  mode: 'modal',
   navigationOptions: {
     //header: null,
   }
