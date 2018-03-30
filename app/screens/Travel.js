@@ -19,11 +19,13 @@ type Props = {
 
 class Travel extends React.Component<Props> {
   currentPosition: Position = null;
+  stopped: boolean = false;
   constructor(props: Props) {
     super(props);
   }
 
   updateTravelState() {
+    if(this.stopped) return;
     this.props.dispatch(Action.stepTravel());
   }
 
@@ -33,6 +35,10 @@ class Travel extends React.Component<Props> {
 
   componentWillMount() {
     this.updateTravelState();
+  }
+
+  componentWillUnmount() {
+    this.stopped = true;
   }
 
   componentDidUpdate() {

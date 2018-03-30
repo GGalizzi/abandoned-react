@@ -10,6 +10,7 @@ import * as Action from '../actions';
 type Props = {
   knownCities: City[],
   dispatch: Dispatch<any>,
+  currentLocationId: number,
 };
 
 export class World extends React.Component<Props> {
@@ -31,11 +32,13 @@ export class World extends React.Component<Props> {
         <FlatList
           data={this.props.knownCities}
           keyExtractor={(item) => item.name}
-          renderItem={({item, index}) => (
+          renderItem={({item}) => (
             <View>
               <Button
-                onPress={this.travelTo({type:'CITY', index})}
-                title={item.name}
+                onPress={item.id === this.props.currentLocationId
+                  ? () => {}
+                  : this.travelTo({type:'CITY', id:item.id})}
+                title={item.name + item.id}
               />
             </View>
           )}
@@ -45,8 +48,9 @@ export class World extends React.Component<Props> {
   }
 }
 
-          const mapStateToProps = (state) => ({
-            knownCities: state.locations.knownCities,
-          });
+const mapStateToProps = (state) => ({
+  knownCities: state.locations.knownCities,
+  currentLocationId: state.locations.currentLocation.id,
+});
 
-          export default connect(mapStateToProps)(World);
+export default connect(mapStateToProps)(World);

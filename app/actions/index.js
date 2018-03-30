@@ -107,6 +107,7 @@ export function stepTravel() {
     const state = getState();
 
     if (state.locations.currentLocation.type !== 'TRAVEL') {
+      console.trace();
       throw new Error("Trying to step travel when we are not in travel. ");
     }
 

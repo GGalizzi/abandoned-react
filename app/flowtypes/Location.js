@@ -12,13 +12,14 @@ export type Travel = {
 
 export type PlaceIndex = {
   type: 'CITY' | 'DUNGEON',
-  index: number,
+  id: number,
 };
 
 export type Place =
   | City
 
 export type City = {|
+  id: number,
   name: string,
   position: Position,
   amenities: Array<Amenity>,

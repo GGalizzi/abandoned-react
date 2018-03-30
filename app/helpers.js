@@ -4,7 +4,7 @@ import type { Position } from './flowtypes/Position';
 
 export function getPlaceInfo(location: PlaceIndex, state: LocationData): any {
   if (!location) return null;
-  return state.knownCities[location.index];
+  return state.knownCities.find(item => item.id === location.id);
 }
 
 export function getCurrentPosition(locationData: LocationData): Position {

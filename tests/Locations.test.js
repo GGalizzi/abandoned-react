@@ -14,7 +14,7 @@ const mockStore = configureStore(middleware);
 describe('currentLocation', () => {
   describe('changing location', () => {
     it('can change', () => {
-      const newCity = {type: 'CITY', index: 1};
+      const newCity = {type: 'CITY', id: 2};
       expect(reducer(initialState, changeLocation(newCity))).toEqual({
         ...initialState,
         currentLocation: newCity,
@@ -24,7 +24,7 @@ describe('currentLocation', () => {
     describe('travelling', () => {
       initialState.knownCities[0].position = { x: 10, y: 10 };
       initialState.knownCities[1].position = { x: 11, y: 11 };
-      const newCity = {type: 'CITY', index: 1};
+      const newCity = {type: 'CITY', id: 2};
       const initCity = initialState.knownCities[0];
       let newState = null;
       let store = mockStore({locations: initialState});

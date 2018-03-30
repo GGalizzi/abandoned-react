@@ -8,7 +8,7 @@ import * as Action from '../actions';
 
 export const initialState: LocationData = {
   pathGenerator: null,
-  currentLocation: {type: 'CITY', index: 0},
+  currentLocation: {type: 'CITY', id: 1},
   destination: null,
   knownCities: [
     CityGenerator("Cronoga", {x: 10, y: 10}),
