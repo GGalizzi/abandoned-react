@@ -30,8 +30,8 @@ export type StepTravelAction = {
 }
 
 export type PassTimeAction = {
-  type: 'PASS_TIME',
-  time: number,
+  type: 'TIME_FORWARD',
+  timePassed: number,
 }
 
 export type MobAction =

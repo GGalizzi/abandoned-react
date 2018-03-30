@@ -5,7 +5,6 @@ import React from 'react';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { Text, View, TouchableHighlight } from 'react-native';
-import { passTime } from '../actions';
 import { getPlaceInfo } from '../helpers';
 
 type Props = {

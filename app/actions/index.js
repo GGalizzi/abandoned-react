@@ -5,12 +5,14 @@ import type {
    ChangeDestinationAction,
    StartTravellingAction,
    StepTravelAction,
-   TimeAction
+   PassTimeAction,
+   TimeAction,
    } from '../flowtypes/Action';
 import type { Travel, Place, PlaceIndex, CurrentLocation, LocationData } from '../flowtypes/Location';
 import type { Position } from '../flowtypes/Position';
 import { getPlaceInfo, getCurrentPosition } from '../helpers';
 import { NavigationActions } from 'react-navigation';
+import * as Time from '../lib/time';
 import ROT from '../vendor/rot';
 
 export const HEAL_STAMINA = 'HEAL_STAMINA';
@@ -29,11 +31,11 @@ export function changeLocation(location: CurrentLocation): ChangeLocationAction 
   }
 }
 
-export const PASS_TIME = 'PASS_TIME';
-export function passTime(time: number): TimeAction {
+export const TIME_FORWARD = 'TIME_FORWARD';
+export function timeForward(timePassed: number): TimeAction {
   return {
-    type: PASS_TIME,
-    time,
+    type: TIME_FORWARD,
+    timePassed,
   };
 }
 
@@ -115,7 +117,7 @@ export function stepTravel() {
     } else {
       (newLocation:any).position = n.value;
       if (n.value !== state.locations.currentLocation.position) {
-        //TODO: dispatch time forward
+        dispatch(timeForward(Time.minute * 15))
       }
     }
     const newStep: StepTravelAction = {
