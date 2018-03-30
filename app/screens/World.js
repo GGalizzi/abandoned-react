@@ -3,7 +3,7 @@ import type { Dispatch } from 'redux';
 import type { City, PlaceIndex } from '../flowtypes/Location';
 import React from 'react';
 import { NavigationActions } from 'react-navigation';
-import { View, TouchableHighlight, Text } from 'react-native';
+import { View, Button, Text, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import * as Action from '../actions';
 
@@ -28,17 +28,25 @@ export class World extends React.Component<Props> {
   render() {
     return (
       <View>
-        <TouchableHighlight onPress={this.travelTo({type: 'CITY', index: 1})}>
-          <Text>Travel elsewhere</Text>
-        </TouchableHighlight>
+        <FlatList
+          data={this.props.knownCities}
+          keyExtractor={(item) => item.name}
+          renderItem={({item, index}) => (
+            <View>
+              <Button
+                onPress={this.travelTo({type:'CITY', index})}
+                title={item.name}
+              />
+            </View>
+          )}
+        />
       </View>
     );
   }
-
 }
 
-const mapStateToProps = (state) => ({
-  knownCities: state.locations.knownCities,
-});
+          const mapStateToProps = (state) => ({
+            knownCities: state.locations.knownCities,
+          });
 
-export default connect(mapStateToProps)(World);
+          export default connect(mapStateToProps)(World);
