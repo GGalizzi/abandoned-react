@@ -2,7 +2,7 @@
 import type { City } from '../flowtypes/Location';
 import type { Position } from '../flowtypes/Position';
 import type { Amenity, Inn, Weaponsmith } from '../flowtypes/Amenity';
-import { CityGenerator } from '../models/City';
+import { CityGenerator } from '../lib/City';
 import { initialState as locationsInitialState } from './locations';
 
 export const initialState: City = locationsInitialState.knownCities[0];

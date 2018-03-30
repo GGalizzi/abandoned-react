@@ -2,7 +2,7 @@
 import type { City } from '../flowtypes/Location';
 import type { LocationAction } from '../flowtypes/Action';
 import type { CurrentLocation, LocationData } from '../flowtypes/Location';
-import { CityGenerator } from '../models/City';
+import { CityGenerator } from '../lib/City';
 import * as Action from '../actions';
 
 
